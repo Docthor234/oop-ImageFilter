@@ -20,7 +20,7 @@ public enum FilterSet {
      */
 	FilterSet(double[][] kernel) {
 		this.kernel = kernel;
-	}
+	} 
 	/**
      * Returns this filter's kernel matrix so it can be applied to an image.
      * @return the 3x3 matrix of weights
