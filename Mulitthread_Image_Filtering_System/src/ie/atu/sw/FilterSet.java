@@ -14,7 +14,7 @@ public enum FilterSet {
 	BOX_BLUR(new double[][]{{0.111, 0.111, 0.111}, {0.111, 0.111, 0.111}, {0.111, 0.111, 0.111}});
 	// The kernel matrix this filter applies — one grid per constant.
 	private final double [][] kernel;
-	/**
+	/** 
      * Stores the kernel matrix for a filter constant.
      * @param kernel the 3x3 matrix of weights for this filter
      */
