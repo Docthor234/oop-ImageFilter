@@ -2,6 +2,7 @@ package ie.atu.sw;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.Iterator;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
@@ -33,13 +34,17 @@ public class Runner {
 					break;
 				}
 				case 2: {
+					//Case 2 is the orchestrator/coordinator. Calls the methods and passes data between them, 
+					//methods don't call each other. Cohesion
 					System.out.println("2. Select Single Image");
 					// print. opposed to println, allows to type on the same line
 					System.out.print("Enter the path to the iamge file: ");
 					// Read the whole line they type as the file path
 					String path = scanner.nextLine();
+					// Shoves the workload off to the selectFilter method
+					FilterSet chosen = selectFilter(scanner);//using scanner as we need a input. Once chosen is done below got to case 2.
 					// Shoves the workload off to the reader method
-					readImage(path);
+					processImage(path, chosen);//Formally read image, now processing image
 					break;
 				}
 				case 3: {
@@ -49,7 +54,7 @@ public class Runner {
 				case 4: {
 					System.out.println("4 Quit/Close");
 					System.out.println("Closing App");
-					running = false;
+					running = false; 
 				}
 				default:
 					throw new IllegalArgumentException("Unexpected value: " + choice);
@@ -64,8 +69,10 @@ public class Runner {
 
 	/**
 	 * Reads a single image from the given file path and prints it dimensions
+	 * With this we only want it to read an image. If we had it  reading image, running the filter menu & saving, that is low Cohesion.
+	 * 
 	 */
-	private static void readImage(String path) {
+	private static void processImage(String path, FilterSet chosen) {
 		try {
 			// Wrap the path string in a File object so we can query it
 			File file = new File(path);
@@ -104,4 +111,21 @@ public class Runner {
 		        System.out.println("Error reading image: " + e.getMessage());
 		    }
 		}
+	//select image filter to link up with our Enum.
+	public static FilterSet selectFilter(Scanner scanner) {
+		FilterSet[] filters = FilterSet.values();// showing every value in the enum
+		System.out.println("\n=== Please select the filter you wish to choose ===");
+		for (int i = 0; i < filters.length; i++) {
+			//Show a number beside each filters name
+			System.out.println((i + 1) + ". " + filters[i]);
+		}
+		//need input to be selected
+		System.out.print("Select your filter - ");
+		int pick = scanner.nextInt();
+		scanner.nextInt();
+		scanner.nextLine(); // eats leftover line
+		//since working with matrix we are converting it back into regular unary system 1 to whatever.
+		//Also, need to do similar with reading in file path, need something to remove "" when copy and paste is done.
+		return filters[pick - 1];
+	}
 }
