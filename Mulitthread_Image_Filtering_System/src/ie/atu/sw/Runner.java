@@ -69,8 +69,8 @@ public class Runner {
 
 	/**
 	 * Reads a single image from the given file path and prints it dimensions
-	 * With this we only want it to read an image. If we had it  reading image, running the filter menu & saving, that is low Cohesion.
-	 * 
+	 * With this, at the start, we only want it to read an image. If we had it  reading image, running the filter menu & saving, that is low Cohesion.
+	 * Now we want this to process the image, @path reading path file, @chosen the filter the user selected.
 	 */
 	private static void processImage(String path, FilterSet chosen) {
 		try {
@@ -83,28 +83,28 @@ public class Runner {
 				return; // bail out if nothing to read
 			}
 			// decode the file into Memory an in memory Buffered image (Loading from non
-			// volatile to volatile memory - disk to RAM< JVM heap)
+			// non volatile to volatile memory - disk to RAM< JVM heap)
 			BufferedImage image = ImageIO.read(file);
-
+			
 			// Making ImageIO returns null (not an exception) if the file exists but is not
 			// valid or recognised image format.
 			if (image == null) {
 				System.out.println("The file is unreadable, try correct file type!");
+				return;
 			}
-
-			System.out.println("Loaded: " + image.getWidth() + " X " + image.getHeight() + "Pixels"); double[][] identity = {
-		            {0, 0, 0},
-		            {0, 1, 0},
-		            {0, 0, 0}
-		        };
-		        ImageFilter filter = new ConvolutionFilter(identity);
-		        BufferedImage result = filter.apply(image);
-		        ImageIO.write(result, "png", new File("output.png"));
-		        System.out.println("Saved output.png"); 
+			//Removed the identity array as it wasn't too substantial. Math checking. Process chosen filter replaces it.
+			// Fail safe to print out the pciture dimensions to make sure it has the image
+			System.out.println("Image Loaded: " + "Width"+image.getWidth() + " & " + "Height"+ image.getHeight() + "PIxels");
+			//This is the where the old identity array worked. Now we ask the chosen constant in the enum for it kernel.
+			ImageFilter filter = new ConvolutionFilter(chosen.getKernel());
+			//THis next line runs the filter over the image, resulting in a nice new filtered image
+		    BufferedImage result = filter.apply(image);
+		    //Should change to saving to a folder outside of program. Not too much need.
+		    ImageIO.write(result, "png", new File("output.png"));
+		    System.out.println("Saved output.png"); 
 		        /**
 		         * //Since we have not folder attached this will stay in out program. 
-		         * Refresh folder bin, image untouched.
-		         * end temporary test
+		         * Refresh folder bin, image now has filter.
 		         */
 
 		    } catch (Exception e) {
@@ -122,7 +122,6 @@ public class Runner {
 		//need input to be selected
 		System.out.print("Select your filter - ");
 		int pick = scanner.nextInt();
-		scanner.nextInt();
 		scanner.nextLine(); // eats leftover line
 		//since working with matrix we are converting it back into regular unary system 1 to whatever.
 		//Also, need to do similar with reading in file path, need something to remove "" when copy and paste is done.
